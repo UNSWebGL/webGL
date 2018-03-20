@@ -1,8 +1,10 @@
 /*============= Creating a canvas ======================*/
 var canvas = document.getElementById('mycanvas');
 gl = canvas.getContext('experimental-webgl');
-var DEG2RAD =Math.PI/180.0; 
-
+const DEG2RAD =Math.PI/180.0; 
+const deltaTheta = 10;
+const deltaPhi = 10;
+const distance = 0.1;
 /*========== Defining and storing the geometry ==========*/
 
 var vertices = [
@@ -129,163 +131,126 @@ gl.useProgram(shaderprogram);
 
 /*==================== MATRIX ====================== */
 
+//////////////////////matriz de modelado ////////////////////////////////
+
+const mo_matrix = mat4.create();
+getModelMatrix();
+
+function getModelMatrix(){
+  mat4.identity(mo_matrix);
+  const v = vec3.create();
+  vec3.set(v,0.5,0.5,0.5);
+  mat4.scale(mo_matrix, mo_matrix, v);
+}
 //////////////////////matriz de vista //////////////////////////////
 //Posicion inicial de la camara.
-   var radius = 2.5;
+   var radius = 1.2;
    var theta = -45.0;
    var phi = 45.0;
    
-  var eye = vec3.create ();
+  const eye = vec3.create ();
   vec3.set (eye, 0.0, 0.0, 0.0);
 
-  var target = vec3.create ();
+  const target = vec3.create ();
   vec3.set (target, 0.0, 0.0, 0.0);
 
-  var up = vec3.create ();
+  const up = vec3.create ();
   vec3.set (up, 0.0, 1.0, 0.0);
 
    const view_matrix = mat4.create();
-   //lookAt(out, eye, center, up)
-   mat4.lookAt(view_matrix,eye,target,up);
-// function get_view (eye,target,at,radius,theta,phi){
-//       eye.y = (radius * Math.cos(Math.PI * DEG2RAD));
-//       eye.x = (radius * Math.sin(Math.PI * DEG2RAD) * Math.Cos(theta * DEG2RAD));
-//       eye.z = (radius * Math.sin(Math.PI * DEG2RAD) * Math.Sin(theta * DEG2RAD));
+   getViewMatrix();
 
-
-// };
+function toCartesian(){
+  const position = vec3.create();
+  var Y = (radius * Math.cos( phi* DEG2RAD));
+  var X = (radius * Math.sin( phi* DEG2RAD) * Math.cos(theta * DEG2RAD));
+  var Z = (radius * Math.sin( phi* DEG2RAD) * Math.sin(theta * DEG2RAD));
+  vec3.set(position,X,Y,Z);
+  return position;
+  }
+function getViewMatrix(){   
+  //Pasamos de sistema esferico, a sistema cartesiano
+  var ojo = toCartesian();
+  //vec3.set(eye,ojo.0,ojo.1,ojo.2);
+  vec3.copy(eye,ojo);
+  //Construimos la matriz y la devolvemos.
+  mat4.lookAt(view_matrix,eye,target,up);
+}
 //////////////////////matriz de proyeccion //////////////////////////////
-const fieldOfView = 45 * Math.PI / 180;   // in radians
-  const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
-  const zNear = 0.1;
-  const zFar = 100.0;
   const proj_matrix = mat4.create();
-
-  // note: glmatrix.js always has the first argument
-  // as the destination to receive the result.
-  mat4.perspective(proj_matrix,
-                   fieldOfView,
-                   aspect,
-                   zNear,
-                   zFar);
-
-//var proj_matrix = get_projection(50, 1, 0.1, 100);
-const mo_matrix = mat4.create();
-mat4.identity(mo_matrix);
-const v = vec3.create();
-vec3.set(v,0.5,0.5,0.5);
-mat4.scale(mo_matrix, mo_matrix, v);
-console.log(mo_matrix)
-// var view_matrix = [ 
-//     1,0,0,0, 
-//     0,1,0,0,
-//     0,0,1,0,
-//     0,0,0,1 ];
-
-// view_matrix[14] = view_matrix[14]-6;
-
-/*================= Mouse events ======================*/
-
-var AMORTIZATION = 0.3;
-var drag = false;
-var old_x, old_y;
-var dX = 0, dY = 0;
-
-var mouseDown = function(e) {
-   drag = true;
-   old_x = e.pageX, old_y = e.pageY;
-   e.preventDefault();
-   return false;
-};
-
-var mouseUp = function(e){
-   drag = false;
-};
-
-var mouseMove = function(e) {
-   if (!drag) return false;
-   dX = (e.pageX-old_x)*2*Math.PI/canvas.width,
-   dY = (e.pageY-old_y)*2*Math.PI/canvas.height;
-   THETA+= dX;
-   PHI+=dY;
-   old_x = e.pageX, old_y = e.pageY;
-   e.preventDefault();
-};
-var mouseRoll = function(e){
-   var e = window.event || e; // old IE support
-   var delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
-   view_matrix[14] = view_matrix[14]+delta;
+  getProjectionMatrix();
+function getProjectionMatrix(){
+const fieldOfView = 50 * DEG2RAD;   // in radians
+const aspect = 1;
+const zNear = 0.1;
+const zFar = 100.0;
+mat4.perspective(proj_matrix,fieldOfView,aspect,zNear,zFar);
 }
 
 
-canvas.addEventListener("mousewheel", mouseRoll, false);
-canvas.addEventListener("mousedown", mouseDown, false);
-canvas.addEventListener("mouseup", mouseUp, false);
-canvas.addEventListener("mouseout", mouseUp, false);
-canvas.addEventListener("mousemove", mouseMove, false);
-
-/*=========================rotation================*/
-
-function rotateX(m, angle) {
-   var c = Math.cos(angle);
-   var s = Math.sin(angle);
-   var mv1 = m[1], mv5 = m[5], mv9 = m[9];
-	
-   m[1] = m[1]*c-m[2]*s;
-   m[5] = m[5]*c-m[6]*s;
-   m[9] = m[9]*c-m[10]*s;
-
-   m[2] = m[2]*c+mv1*s;
-   m[6] = m[6]*c+mv5*s;
-   m[10] = m[10]*c+mv9*s;
-}
-
-function rotateY(m, angle) {
-   var c = Math.cos(angle);
-   var s = Math.sin(angle);
-   var mv0 = m[0], mv4 = m[4], mv8 = m[8];
-	
-   m[0] = c*m[0]+s*m[2];
-   m[4] = c*m[4]+s*m[6];
-   m[8] = c*m[8]+s*m[10];
-
-   m[2] = c*m[2]-s*mv0;
-   m[6] = c*m[6]-s*mv4;
-   m[10] = c*m[10]-s*mv8;
-}
-
-/*=================== Drawing =================== */
-
-var THETA = 0,
-PHI = 0;
-var time_old = 0;
-	
-var animate = function(time) {
-   var dt = time-time_old;
-		
-   if (!drag) {
-      dX *= AMORTIZATION, dY*=AMORTIZATION;
-      THETA+=dX, PHI+=dY;
-   }
+///////////////////////////////eventos mouse ///////////////////////////
+document.addEventListener("keydown", function (event) {
+  if (event.defaultPrevented) {
+    return; // Do nothing if the event was already processed
+  }
+  switch (event.key) {
+    case "ArrowDown":
+      phi = phi + deltaPhi;
+      if (phi > 170)
+      {
+          phi = 170;
+      }
       
-   //set model matrix to I4
-		
-   // mo_matrix[0] = 1, mo_matrix[1] = 0, mo_matrix[2] = 0,
-   // mo_matrix[3] = 0,
-		
-   // mo_matrix[4] = 0, mo_matrix[5] = 1, mo_matrix[6] = 0,
-   // mo_matrix[7] = 0,
-		
-   // mo_matrix[8] = 0, mo_matrix[9] = 0, mo_matrix[10] = 1,
-   // mo_matrix[11] = 0,
-		
-   // mo_matrix[12] = 0, mo_matrix[13] = 0, mo_matrix[14] = 0,
-   // mo_matrix[15] = 1;
+      dibujarEscena();
 
-   rotateY(mo_matrix, THETA);
-   rotateX(mo_matrix, PHI);
-		
-   time_old = time; 
+      break;
+    case "ArrowUp":
+      phi = phi - deltaPhi;
+      if (phi > 170)
+      {
+          phi = 170;
+      }
+      
+      dibujarEscena();
+      break;
+    case "ArrowLeft":
+      theta = theta + deltaTheta;
+      
+      dibujarEscena();
+      break;
+    case "ArrowRight":
+      theta = theta - deltaTheta;
+      
+      dibujarEscena();
+      break;
+    case "+":
+      if ((distance > 0) && (distance < radius))
+      {
+      radius = radius - distance;
+      }
+      dibujarEscena();
+      break;
+    case "-":
+       if ((distance > 0) && (distance < radius))
+      {
+      radius = radius + distance;
+      }
+      dibujarEscena();
+      break;
+    default:
+      return; // Quit when this doesn't handle the key event.
+  }
+
+  // Cancel the default action to avoid it being handled twice
+  event.preventDefault();
+}, true);
+
+
+
+
+dibujarEscena();
+
+function dibujarEscena(){
    gl.enable(gl.DEPTH_TEST);
 		
    // gl.depthFunc(gl.LEQUAL);
@@ -295,14 +260,16 @@ var animate = function(time) {
    gl.viewport(0.0, 0.0, canvas.width, canvas.height);
    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
+   getModelMatrix();
+   getViewMatrix();//genera la matrix de vista modificando view_matrix
+   getProjectionMatrix();
+   
    gl.uniformMatrix4fv(_Pmatrix, false, proj_matrix);
    gl.uniformMatrix4fv(_Vmatrix, false, view_matrix);
    gl.uniformMatrix4fv(_Mmatrix, false, mo_matrix);
 
    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, index_buffer);
    gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
-		
-   window.requestAnimationFrame(animate);
+
 }
 
-animate(0);
