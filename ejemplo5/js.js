@@ -12,7 +12,6 @@ var vertices = [
 0.5, -0.5, -0.5,
 -0.5, -0.5, -0.5,
 -0.5, 0.5, -0.5,
-
 0.5, 0.5, 0.5,
 0.5, -0.5, 0.5,
 -0.5, -0.5, 0.5,
@@ -50,17 +49,17 @@ var vertices = [
 
 var indices = [
     0, 1, 2, 
-     0, 2, 3,
-     4, 5, 1,
-     4, 1, 0,
-     7, 6, 5,
-     7, 5, 4,
-     3, 2, 6,
-     3, 6, 7,
-     3, 7, 4,
-     3, 4, 0,
-     1, 5, 6,
-     1, 6, 2
+    0, 2, 3,
+    4, 5, 1,
+    4, 1, 0,
+    7, 6, 5,
+    7, 5, 4,
+    3, 2, 6,
+    3, 6, 7,
+    3, 7, 4,
+    3, 4, 0,
+    1, 5, 6,
+    1, 6, 2
 ];
 
 // Create and store data into vertex buffer
@@ -138,8 +137,7 @@ getModelMatrix();
 
 function getModelMatrix(){
   mat4.identity(mo_matrix);
-  const v = vec3.create();
-  vec3.set(v,0.5,0.5,0.5);
+  const v = vec3.fromValues(0.5, 0.5, 0.5);
   mat4.scale(mo_matrix, mo_matrix, v);
 }
 //////////////////////matriz de vista //////////////////////////////
@@ -148,43 +146,36 @@ function getModelMatrix(){
    var theta = -45.0;
    var phi = 45.0;
    
-  const eye = vec3.create ();
-  vec3.set (eye, 0.0, 0.0, 0.0);
+  const eye = vec3.fromValues(0, 0, 0);
+  const target = vec3.fromValues(0, 0, 0);
+  const up = vec3.fromValues(0, 1.0, 0);  //vector unitario en y
+  const view_matrix = mat4.create();
 
-  const target = vec3.create ();
-  vec3.set (target, 0.0, 0.0, 0.0);
-
-  const up = vec3.create ();
-  vec3.set (up, 0.0, 1.0, 0.0);
-
-   const view_matrix = mat4.create();
-   getViewMatrix();
+  getViewMatrix();
 
 function toCartesian(){
-  const position = vec3.create();
   var Y = (radius * Math.cos( phi* DEG2RAD));
   var X = (radius * Math.sin( phi* DEG2RAD) * Math.cos(theta * DEG2RAD));
   var Z = (radius * Math.sin( phi* DEG2RAD) * Math.sin(theta * DEG2RAD));
-  vec3.set(position,X,Y,Z);
+  const position = vec3.fromValues(X, Y, Z);
   return position;
   }
 function getViewMatrix(){   
   //Pasamos de sistema esferico, a sistema cartesiano
   var ojo = toCartesian();
-  //vec3.set(eye,ojo.0,ojo.1,ojo.2);
   vec3.copy(eye,ojo);
-  //Construimos la matriz y la devolvemos.
+  //modificamos la matriz de vista.
   mat4.lookAt(view_matrix,eye,target,up);
 }
 //////////////////////matriz de proyeccion //////////////////////////////
   const proj_matrix = mat4.create();
   getProjectionMatrix();
 function getProjectionMatrix(){
-const fieldOfView = 50 * DEG2RAD;   // in radians
-const aspect = 1;
-const zNear = 0.1;
-const zFar = 100.0;
-mat4.perspective(proj_matrix,fieldOfView,aspect,zNear,zFar);
+  const fieldOfView = 50 * DEG2RAD;   // in radians
+  const aspect = 1;
+  const zNear = 0.1;
+  const zFar = 100.0;
+  mat4.perspective(proj_matrix,fieldOfView,aspect,zNear,zFar);
 }
 
 
@@ -200,9 +191,7 @@ document.addEventListener("keydown", function (event) {
       {
           phi = 170;
       }
-      
       dibujarEscena();
-
       break;
     case "ArrowUp":
       phi = phi - deltaPhi;
@@ -210,30 +199,25 @@ document.addEventListener("keydown", function (event) {
       {
           phi = 170;
       }
-      
       dibujarEscena();
       break;
     case "ArrowLeft":
       theta = theta + deltaTheta;
-      
       dibujarEscena();
       break;
     case "ArrowRight":
       theta = theta - deltaTheta;
-      
       dibujarEscena();
       break;
     case "+":
-      if ((distance > 0) && (distance < radius))
-      {
-      radius = radius - distance;
+      if ((distance > 0) && (distance < radius)){
+        radius = radius - distance;
       }
       dibujarEscena();
       break;
     case "-":
-       if ((distance > 0) && (distance < radius))
-      {
-      radius = radius + distance;
+      if ((distance > 0) && (distance < radius)){
+        radius = radius + distance;
       }
       dibujarEscena();
       break;
@@ -252,10 +236,8 @@ dibujarEscena();
 
 function dibujarEscena(){
    gl.enable(gl.DEPTH_TEST);
-		
    // gl.depthFunc(gl.LEQUAL);
-		
-   gl.clearColor(0.5, 0.5, 0.5, 0.9);
+   gl.clearColor(0, 0, 0, 0.9);
    gl.clearDepth(1.0);
    gl.viewport(0.0, 0.0, canvas.width, canvas.height);
    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -269,6 +251,7 @@ function dibujarEscena(){
    gl.uniformMatrix4fv(_Mmatrix, false, mo_matrix);
 
    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, index_buffer);
+   //gl.drawElements(gl.LINE_LOOP, indices.length, gl.UNSIGNED_SHORT, 0);
    gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
 
 }
