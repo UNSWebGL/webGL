@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Hello WebGL2</title>
+<script src="js/model/RawModel.js"></script>
+<script src="js/model/Loader.js"></script>
+<script src="js/model/Renderer.js"></script>
+<script src="js/shader/ShaderProgram.js"></script>
+<script src="js/shader/HelloShader.js"></script>
+<script>
+var gl = null;
+
+var rawModel = null;
+var renderer = null;
+var shaderProgram = null;
+
+function onLoad() {
+	let canvas = document.getElementById('webglCanvas');
+	gl = canvas.getContext('webgl2');
+
+	let loader = new Loader();
+	let positions = [
+		-0.5, 0.5, 0,
+		-0.5, -0.5, 0,
+		0.5, -0.5, 0
+	];
+	let vertexShaderSource =
+`#version 300 es 
+
+in vec3 vPos;
+
+void main(void) {
+	gl_Position = vec4(vPos, 1.0);
+}
+`;
+	let fragmentShaderSource =
+`#version 300 es
+precision mediump float;
+
+out vec4 fragColor;
+
+void main(void) {
+	fragColor = vec4(1, 0, 0, 1);
+}
+`;
+	rawModel = loader.loadToVAO(positions);
+	renderer = new Renderer();
+	shaderProgram = new HelloShader(vertexShaderSource, fragmentShaderSource);
+	onPaint();
+}
+
+function onPaint() {
+	renderer.prepare();
+	shaderProgram.start();
+	renderer.render(rawModel);
+	shaderProgram.stop();
+}
+</script>
+</head>
+
+<body onload='onLoad();'>
+<h1>Hello WebGL2</h1>
+<div>
+	<button onclick="onPaint()">Render!</button>
+</div>
+
+<canvas id='webglCanvas' width = "500" height = "500"></canvas>
+
+</body>
