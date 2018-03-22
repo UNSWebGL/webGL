@@ -27,8 +27,9 @@ function onLoad() {
 		-0.5, -0.5, 0,
 		0.5, -0.5, 0
 	];
+	let indices = [0, 1, 2];
 
-	rawModel = loader.loadToVAO(positions);
+	rawModel = loader.loadToVAO(indices, positions);
 	renderer = new Renderer();
 	shaderProgram = new HelloShader(vertexShaderSource, fragmentShaderSource);
 	onPaint();

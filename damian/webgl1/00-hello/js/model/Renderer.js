@@ -14,7 +14,7 @@ class Renderer {
 		vaoExtension.bindVertexArrayOES(rawModel.vao);
 
 		gl.enableVertexAttribArray(0);
-		gl.drawArrays(gl.TRIANGLES, 0, rawModel.vertexCount);
+		gl.drawElements(gl.TRIANGLES, rawModel.indexCount, gl.UNSIGNED_SHORT, 0);
 		gl.disableVertexAttribArray(0);
 
 		vaoExtension.bindVertexArrayOES(null);
