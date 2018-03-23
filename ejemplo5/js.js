@@ -6,7 +6,7 @@ const deltaTheta = 10;
 const deltaPhi = 10;
 const distance = 0.1;
 /*========== Defining and storing the geometry ==========*/
-
+/*
 var vertices = [
 0.5, 0.5, -0.5,
 0.5, -0.5, -0.5,
@@ -17,7 +17,7 @@ var vertices = [
 -0.5, -0.5, 0.5,
 -0.5, 0.5, 0.5
 ];
-
+*/
 // var colors = [
 //    5,3,7,
 //    5,3,7,
@@ -46,7 +46,7 @@ var vertices = [
 //    0,1,0, 
 //    0,1,0 
 // ];
-
+/*
 var indices = [
     0, 1, 2, 
     0, 2, 3,
@@ -60,7 +60,12 @@ var indices = [
     3, 4, 0,
     1, 5, 6,
     1, 6, 2
-];
+];*/
+//La variable objFileContent esta en "fileXX.obj.js"
+var parsedObj = ObjParser.parseFile(objFileContent);
+var vertices = parsedObj.positions;
+var indices = parsedObj.indices;
+
 /////////////////////////////// BUFFERS //////////////////////////////////////
 
 // Create and store data into vertex buffer
