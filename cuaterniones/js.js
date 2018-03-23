@@ -1,10 +1,7 @@
 /*============= creamos el canvas ======================*/
 var canvas = document.getElementById('mycanvas');
 gl = canvas.getContext('experimental-webgl');
-const DEG2RAD =Math.PI/180.0; 
-const deltaTheta = 10;
-const deltaPhi = 10;
-const distance = 0.1;
+
 /*========== Defining and storing the geometry ==========*/
 
 var vertices = [
@@ -61,6 +58,25 @@ var indices = [
     1, 5, 6,
     1, 6, 2
 ];
+//////////////////////////////// camara /////////////////////////////////
+const DEG2RAD =Math.PI/180.0; 
+const deltaTheta = 0.1;
+const deltaPhi = 0.1;
+let distance = 0.1;
+let radius = 2.0;
+//frustum de vision
+let fovy = 50 * DEG2RAD; //50 grados de angulo.
+let aspectRadio = 1; //Cuadrado
+let zNear = 0.1; //Plano Near
+let zFar = 100;  //Plano Far
+//creamos el cuaternion cameraRot
+const cameraRot = quat.create();
+const cameraRot1 = quat.create();
+quat.rotateX(cameraRot1, cameraRot1, 45);
+const cameraRot2 = quat.create();
+quat.rotateY(cameraRot2, cameraRot2, 45);
+quat.mul(cameraRot,cameraRot1,cameraRot2);
+
 /////////////////////////////// BUFFERS //////////////////////////////////////
 
 // Create and store data into vertex buffer
@@ -134,6 +150,7 @@ gl.useProgram(shaderprogram);
 //////////////////////matriz de modelado ////////////////////////////////
 
 const mo_matrix = mat4.create();
+
 getModelMatrix();
 
 function getModelMatrix(){
@@ -143,15 +160,15 @@ function getModelMatrix(){
 }
 //////////////////////matriz de vista //////////////////////////////
 //Posicion inicial de la camara.
-   var radius = 1.2;
-   var theta = -45.0;
-   var phi = 45.0;
+  //  var radius = 1.2;
+  //  var theta = -45.0;
+  //  var phi = 45.0;
    
-  const eye = vec3.fromValues(0, 0, 0);
-  const target = vec3.fromValues(0, 0, 0);
-  const up = vec3.fromValues(0, 1.0, 0);  //vector unitario en y
-  const view_matrix = mat4.create();
-
+  // const eye = vec3.fromValues(0, 0, 0);
+  // const target = vec3.fromValues(0, 0, 0);
+  // const up = vec3.fromValues(0, 1.0, 0);  //vector unitario en y
+  // const view_matrix = mat4.create();
+  const view_matrix=mat4.create();
   getViewMatrix();
 
 function toCartesian(){
@@ -163,10 +180,16 @@ function toCartesian(){
   }
 function getViewMatrix(){   
   //Pasamos de sistema esferico, a sistema cartesiano
-  var ojo = toCartesian();
-  vec3.copy(eye,ojo);
-  //modificamos la matriz de vista.
-  mat4.lookAt(view_matrix,eye,target,up);
+  const cameraPos =vec3.fromValues(0.0,0.0,radius);
+  var menosRadius= radius*-1;
+  const matrixFromQuater = mat4.create();
+  mat4.fromQuat(matrixFromQuater, cameraRot);
+  const cameraPosTraslation =vec3.fromValues(0,0,menosRadius);
+  const traslacion=mat4.create();
+  mat4.fromTranslation(traslacion, cameraPosTraslation);
+  mat4.mul(view_matrix,traslacion,matrixFromQuater);
+  quat.normalize(cameraRot,cameraRot);
+
 }
 //////////////////////matriz de proyeccion //////////////////////////////
   const proj_matrix = mat4.create();
@@ -187,29 +210,28 @@ document.addEventListener("keydown", function (event) {
   }
   switch (event.key) {
     case "ArrowDown":
-      phi = phi + deltaPhi;
-      if (phi > 170)
-      {
-          phi = 170;
-      }
-      console.log(phi);
-      dibujarEscena();
+      {const tmpQuat=quat.create();
+      quat.rotateX(tmpQuat, tmpQuat, deltaPhi);
+      quat.mul(cameraRot,cameraRot,tmpQuat);
+      dibujarEscena();}
       break;
     case "ArrowUp":
-      phi = phi - deltaPhi;
-      if (phi > 170)
-      {
-          phi = 170;
-      }
-      dibujarEscena();
+      {const tmpQuat=quat.create();
+      quat.rotateX(tmpQuat, tmpQuat, -deltaPhi);
+      quat.mul(cameraRot,cameraRot,tmpQuat);
+      dibujarEscena();}
       break;
     case "ArrowLeft":
-      theta = theta + deltaTheta;
-      dibujarEscena();
+      {const tmpQuat=quat.create();
+      quat.rotateY(tmpQuat, tmpQuat, deltaTheta);
+      quat.mul(cameraRot,cameraRot,tmpQuat);
+      dibujarEscena();}
       break;
     case "ArrowRight":
-      theta = theta - deltaTheta;
-      dibujarEscena();
+      {const tmpQuat=quat.create();
+      quat.rotateY(tmpQuat, tmpQuat, -deltaTheta);
+      quat.mul(cameraRot,cameraRot,tmpQuat);
+      dibujarEscena();}
       break;
     case "+":
       if ((distance > 0) && (radius-distance > 0)){
