@@ -1,15 +1,15 @@
 class RawModel {
 
-	constructor(vao, vertexCount) {
+	constructor(vao, indexCount) {
 		this._vao = vao;
-		this._vertexCount = vertexCount;
+		this._indexCount = indexCount;
 	}
 
 	get vao() {
 		return this._vao;
 	}
 
-	get vertexCount() {
-		return this._vertexCount;
+	get indexCount() {
+		return this._indexCount;
 	}
 }

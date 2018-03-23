@@ -1,10 +1,11 @@
 class Loader {
 
-	loadToVAO(positions) {
+	loadToVAO(indices, positions) {
 		let vao = this._createVAO();
+		this._createEBO(indices);
 		this._storeDataInAttributeList(0, positions);
 		this._unbindVAO();
-		return new RawModel(vao, positions.length / 3);
+		return new RawModel(vao, indices.length);
 	}
 
 	_createVAO() {
@@ -31,4 +32,9 @@ class Loader {
 		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(data), gl.STATIC_DRAW);
 	}
 
+	_createEBO(indices) {
+		let ebo = gl.createBuffer();
+		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ebo);
+		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
+	}
 }
