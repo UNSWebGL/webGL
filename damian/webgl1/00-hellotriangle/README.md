@@ -35,6 +35,10 @@ La información de los objetos que queremos dibujar debemos almacenarla en buffe
 	4. Activar el programa de shader a utilizar.
 4. En el shader de vértices, ¿Cuántos attributos se utilizan para cada vértice?
 5. En el shader de fragmentos, ¿Cómo se calcula el color de salida del fragmento?
+6. ¿Cuál es la instrucción que efectivamente ordena a WebGL el dibujado?
+	1. ¿Que primitiva de OpenGL es utilizada?
+	2. ¿Que programa de shader es utilizado?
+	3. ¿Que buffers son utilizados?
 
 ## Ejercicios sobre el ejemplo:
 1. Agregar un nuevo atributo para cada vértice, el color:
