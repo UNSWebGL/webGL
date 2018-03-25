@@ -5,34 +5,34 @@ En el pipeline programable de OpenGL(WebGL) *debemos* programar (al menos) dos e
 2. En una operación de dibujado ¿Cuántas veces se ejecuta cada uno?
 3. ¿En que lenguage se programan estos shaders?
 4. Indicar cuál de los shaders tiene como principal información de "salida":
-	a) La posición del vértice/fragmento en coordenadas de clipping.
-	b) El color final que tendrá el vértice/fragmento.
+	1. La posición del vértice/fragmento en coordenadas de clipping.
+	2. El color final que tendrá el vértice/fragmento.
 5. Indicar cuál de los calificadores de variables (webgl1) se utilizan para las siguientes funciones:
-	a) Recibir información sobre un atributo de un vértice. (`attribute / uniform / varying`)
-	b) Enviar información del shader de vértices al de fragmentos, pasando por el rasterizador. (`attribute / uniform / varying`)
-	c) Recibir información que es igual (constante) para todos los vértices y fragmentos. (`attribute / uniform / varying`)
+	1. Recibir información sobre un atributo de un vértice. (`attribute / uniform / varying`)
+	2. Enviar información del shader de vértices al de fragmentos, pasando por el rasterizador. (`attribute / uniform / varying`)
+	3. Recibir información que es igual (constante) para todos los vértices y fragmentos. (`attribute / uniform / varying`)
 
 ## Buffers
 La información de los objetos que queremos dibujar debemos almacenarla en buffers de OpenGL(WebGL).
 (Tambien existen buffers para otras operaciones, como veremos más adelante)
 1. ¿Cuáles son estos tipos de buffers?
 2. Indicar cual se utiliza para almacenar:
-	a) Los indices. (`VAO / VBO / EBO`)
-	b) La información de un atributo de vértice. (`VAO / VBO / EBO`)
-	c) Información de layout de los buffers y de los indices. (`VAO / VBO / EBO`)
+	1. Los indices. (`VAO / VBO / EBO`)
+	2. La información de un atributo de vértice. (`VAO / VBO / EBO`)
+	3. Información de layout de los buffers y de los indices. (`VAO / VBO / EBO`)
 
 ## Sobre este ejemplo
 1. ¿Qué elemento HTML se utiliza para obtener un contexto para gráficos 3D con WebGL?
-	a. Un elemento `<img>`
-	b. Un elemento `<canvas>`
-	c. Un elemento `<div>`
-	d. Un elemento `<webgl>`
+	1. Un elemento `<img>`
+	2. Un elemento `<canvas>`
+	3. Un elemento `<div>`
+	4. Un elemento `<webgl>`
 2. ¿Cuándo y cuántas veces se ejecutan los métodos **onLoad** y **onRender**?
 3. ¿Cuándo (una única vez / cada vez que se dibuja) se ejecutan las siguientes tareas?
-	a. Crear y compilar los shaders y el programa de shaders.
-	b. Crear y llenar los buffers.
-	c. Activar el buffer a utilizar.
-	d. Activar el programa de shader a utilizar.
+	1. Crear y compilar los shaders y el programa de shaders.
+	2. Crear y llenar los buffers.
+	3. Activar el buffer a utilizar.
+	4. Activar el programa de shader a utilizar.
 4. En el shader de vértices, ¿Cuántos attributos se utilizan para cada vértice?
 5. En el shader de fragmentos, ¿Cómo se calcula el color de salida del fragmento?
 
