@@ -19,4 +19,19 @@ class Utils {
 		fileReader.onload = onLoadFileHandler;
 		fileReader.readAsText(file);
 	}
+
+	static reArrangeIndicesToRenderWithLines(indices) {
+		let result = [];
+		let count = indices.length;
+		let index = 0;
+		for (let i = 0; i < count; i = i + 3) {
+			result.push(indices[i]);
+			result.push(indices[i + 1]);
+			result.push(indices[i + 1]);
+			result.push(indices[i + 2]);
+			result.push(indices[i + 2]);
+			result.push(indices[i]);
+		}
+		return result;
+	}
 }
