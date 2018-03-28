@@ -70,6 +70,9 @@ function onLoad() {
 }
 
 function onRender() {
+	//Armo mi matriz de modelado.
+	mat4.fromYRotation(modelMatrix, glMatrix.toRadian(angle));
+
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
 	gl.useProgram(shaderProgram);
@@ -86,7 +89,5 @@ function onRender() {
 
 function onSliderRotation(slider) {
 	angle = parseFloat(slider.value);
-
-	mat4.fromYRotation(modelMatrix, glMatrix.toRadian(angle));
 	onRender();
 }
