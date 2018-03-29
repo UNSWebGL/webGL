@@ -81,10 +81,10 @@ function onRender() {
 
 	if (isSolid) {
 		_gl.bindVertexArrayOES(vaoSolid);
-		gl.drawElements(gl.TRIANGLES, indexCountSolid, gl.UNSIGNED_SHORT, 0);
+		gl.drawElements(gl.TRIANGLES, indexCountSolid, gl.UNSIGNED_INT, 0);
 	} else {
 		_gl.bindVertexArrayOES(vaoWire);
-		gl.drawElements(gl.LINES, indexCountWire, gl.UNSIGNED_SHORT, 0);
+		gl.drawElements(gl.LINES, indexCountWire, gl.UNSIGNED_INT, 0);
 	}
 
 	_gl.bindVertexArrayOES(null);

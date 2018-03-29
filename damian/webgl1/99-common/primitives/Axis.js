@@ -68,7 +68,7 @@ class Axis {
 		gl.uniformMatrix4fv(this._u_viewMatrix, false, viewMatrix);
 
 		_gl.bindVertexArrayOES(this._vao);
-		gl.drawElements(gl.LINES, 12, gl.UNSIGNED_SHORT, 0);
+		gl.drawElements(gl.LINES, 12, gl.UNSIGNED_INT, 0);
 		_gl.bindVertexArrayOES(null);
 
 		gl.useProgram(null);
