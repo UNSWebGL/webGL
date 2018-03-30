@@ -27,22 +27,53 @@ class Axis {
 
 	load() {
 		let positions = [
-			0, 0, 0, 1, 0, 0,
-			0, 0, 0, 0, 1, 0,
-			0, 0, 0, 0, 0, 1,
-			0, 0, 0, -1, 0, 0,
-			0, 0, 0, 0, -1, 0,
-			0, 0, 0, 0, 0, -1
+			0, 0, 0, 1, 0, 0, //+x
+			0, 0, 0, 0, 1, 0, //-x
+			0, 0, 0, 0, 0, 1, //+y
+			0, 0, 0, -1, 0, 0, //-y
+			0, 0, 0, 0, -1, 0, //+z
+			0, 0, 0, 0, 0, -1 //-z
 		];
+		let negI = 0.3;
 		let colors = [
 			1, 0, 0, 1, 0, 0,
 			0, 1, 0, 0, 1, 0,
 			0, 0, 1, 0, 0, 1,
-			0.25, 0, 0, 0.25, 0, 0,
-			0, 0.25, 0, 0, 0.25, 0,
-			0, 0, 0.25, 0, 0, 0.25
+			negI, 0, 0, negI, 0, 0,
+			0, negI, 0, 0, negI, 0,
+			0, 0, negI, 0, 0, negI
 		];
-		let indices = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+		let auxSlots = 4;
+		let step = -1;
+		for (let i = 0; i <= 2 * auxSlots; i++) {
+			if (i != auxSlots) {
+				positions.push(-1);
+				positions.push(0);
+				positions.push(step);
+
+				positions.push(1);
+				positions.push(0);
+				positions.push(step);
+
+				positions.push(step);
+				positions.push(0);
+				positions.push(-1);
+
+				positions.push(step);
+				positions.push(0);
+				positions.push(1);
+			}
+			step = step + (1.0 / auxSlots);
+		}
+		for (let i = colors.length; i < positions.length; i++) {
+			colors.push(0.5);
+		}
+		let indices = [];
+		this._indexCount = positions.length / 3;
+		for (let i = 0; i < this._indexCount; i++) {
+			indices.push(i);
+		}
+
 		this._shaderProgram = ShaderProgramHelper.create(
 			this._vertexShaderSource(),
 			this._fragmentShaderSource()
@@ -60,18 +91,14 @@ class Axis {
 	}
 
 	render(projMatrix, viewMatrix) {
-		let previuosLineWidth = gl.getParameter(gl.LINE_WIDTH);
-		gl.lineWidth(3.0);
-
 		gl.useProgram(this._shaderProgram);
 		gl.uniformMatrix4fv(this._u_projMatrix, false, projMatrix);
 		gl.uniformMatrix4fv(this._u_viewMatrix, false, viewMatrix);
 
 		_gl.bindVertexArrayOES(this._vao);
-		gl.drawElements(gl.LINES, 12, gl.UNSIGNED_INT, 0);
+		gl.drawElements(gl.LINES, this._indexCount, gl.UNSIGNED_INT, 0);
 		_gl.bindVertexArrayOES(null);
 
 		gl.useProgram(null);
-		gl.lineWidth(previuosLineWidth);
 	}
 }
