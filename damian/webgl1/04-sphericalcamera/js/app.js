@@ -15,7 +15,7 @@ var u_projMatrix;
 var u_modelColor;
 
 //Uniform values.
-var modelColor = Utils.hexToRgbFloat("#000000");
+var modelColor = Utils.hexToRgbFloat("#FFFFFF");
 
 //Aux variables,
 var angle = 0;
@@ -61,7 +61,7 @@ function onLoad() {
 
 	axis = new Axis();
 	axis.load();
-	camera = new SphericalCamera(800, 600);//use canvas dimensions
+	camera = new SphericalCamera(55, 800/600);//use canvas dimensions
 }
 
 function onRender() {

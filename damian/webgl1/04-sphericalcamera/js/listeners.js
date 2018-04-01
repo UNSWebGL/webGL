@@ -36,6 +36,13 @@ function onSliderPhi(slider, labelId) {
 	onRender();
 }
 
+function onSliderFovy(slider, labelId) {
+	let fovy = parseFloat(slider.value);
+	camera.setFovy(fovy);
+	writeValue(labelId, fovy);
+	onRender();
+}
+
 function onColorModel(picker, labelId) {
 	modelColor = Utils.hexToRgbFloat(picker.value);
 	writeValue(labelId, picker.value);

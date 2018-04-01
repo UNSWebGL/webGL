@@ -6,32 +6,21 @@
  * - Matriz de proyeccion fija.
  */
 class SphericalCamera extends Camera {
-	constructor(width, height) {
-		super();
-		this.r = 1;
+
+	constructor(fovy, aspect) {
+		super(fovy, aspect);
+		this.r = 2;
 		this.theta = 45;//degrees
 		this.phi = 45; //degrees
-		this.aspect = width / height;
 	}
+
 	getViewMatrix() {
 		let eye = this._toCartesianArray();
 		let target = [0, 0, 0];
 		let up = [0, 1, 0];
 
-		let viewMatrix = mat4.create();
-		mat4.lookAt(viewMatrix, eye, target, up);
-		return viewMatrix;
-	}
-
-	getProjMatrix() {
-		let fovy = glMatrix.toRadian(50);
-		let aspect = this.aspect;
-		let zNear = 0.1;
-		let zFar = 100.0;
-
-		let projMatrix = mat4.create();
-		mat4.perspective(projMatrix, fovy, aspect, zNear, zFar);
-		return projMatrix;
+		mat4.lookAt(this.viewMatrix, eye, target, up);
+		return this.viewMatrix;
 	}
 
 	setRadius(radius) {
