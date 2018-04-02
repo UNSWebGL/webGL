@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Free Camera</title>
+	<script src="../99-common/glmatrix/gl-matrix-min.js"></script>
+	<script src="../99-common/VertexAttributeInfo.js"></script>
+	<script src="../99-common/VAOHelper.js"></script>
+	<script src="../99-common/ShaderProgramHelper.js"></script>
+	<script src="../99-common/Utils.js"></script>
+	<script src="../99-common/OBJParser.js"></script>
+	<script src="../99-common/primitives/Axis.js"></script>
+	<script src="../99-common/cameras/Camera.js"></script>
+	<script src="../99-common/cameras/FreeCamera.js"></script>
+	<script src="files/shaders/vertex.glsl"></script>
+	<script src="files/shaders/fragment.glsl"></script>
+	<script src="js/app.js"></script>
+	<script src="js/listeners.js"></script>
+</head>
+<body onkeypress="onKeyDown(event);">
+	<h3>Free Camera</h3>
+	1.Choose OBJ file:
+	<input type='file' onchange='Utils.onFileChooser(event, onModelLoad)'/>
+	<button onclick="onLoad();">2. Load!</button>
+	<button onclick="onRender();">3. Render!</button>
+	4. Change params
+	<br>
+	<table border="2" style='float:left;'>
+		<tr><th>Param</th><th>Control</th><th>Value</th></tr>
+		<tr>
+			<td>Camera FovY</td>
+			<td>10º&le;<input type="range" min="10" max="90" step="1" value="55" oninput="onSliderFovy(this, 'lblFovy');">&le;90</td>
+			<td id="lblFovy">55</td>
+		</tr>
+		<tr>
+			<td>Camera forward/backward</td>
+			<td>KeyW/KeyS</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>Camera left/right</td>
+			<td>KeyA/KeyD</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>Camera up/down</td>
+			<td>KeyQ/KeyE</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>Camera pitch</td>
+			<td>KeyI/KeyK</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>Camera yaw</td>
+			<td>KeyJ/KeyL</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>Camera roll</td>
+			<td>KeyU/KeyO</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>Model Color</td>
+			<td><input type='color' value="#FFFFFF" oninput="onColorModel(this)"></td>
+			<td id='lblColor'></td>
+		</tr>
+		<tr>
+			<td>Model Mode</td>
+			<td>
+				<input type="checkbox" name="a" onchange="onCheckboxSolid(this)">
+				Solid mode
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>Model RotationY</td>
+			<td>0º&le;<input type="range" min="0" max="360" step="1" value="0" oninput="onSliderRotation(this, 'lblRotationY');">&le;360º</td>
+			<td id='lblRotationY'>0</td>
+		</tr>
+		<tr>
+			<td>Model Scale</td>
+			<td>0.1&le;<input type="range" min="0.1" max="2.0" step="0.1" value="1.0" oninput="onSliderScale(this, 'lblScale');">&le;2.0</td>
+			<td id='lblScale'>1.0</td>
+		</tr>
+	</table>
+
+	<canvas id='webglCanvas' width = "800" height = "600" style="border: 1px solid gray"></canvas>
+
+</body>
+</html>
