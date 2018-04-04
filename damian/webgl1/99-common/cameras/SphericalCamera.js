@@ -33,6 +33,18 @@ class SphericalCamera extends Camera {
 		this.phi = phi;
 	}
 
+	getRadius() {
+		return this.r;
+	}
+
+	getTheta() {
+		return this.theta;
+	}
+
+	getPhi() {
+		return this.phi;
+	}
+
 	_toCartesianArray() {
 		let _theta = glMatrix.toRadian(this.theta);
 		let _phi = glMatrix.toRadian(this.phi);
