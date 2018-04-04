@@ -1,4 +1,4 @@
-function onSliderRotation(slider, labelId) {
+	function onSliderRotation(slider, labelId) {
 	angle = parseFloat(slider.value);
 	writeValue(labelId, angle);
 	onRender();
@@ -63,15 +63,17 @@ function writeValue(labelId, value) {
 /* Listeners */
 /* ********* */
 var radius_step = 0.5;
+var theta_step = 5.0;
+var phi_step = 5.0;
 
 function increaseRadius() {
 	let radius = camera.getRadius();
 	radius = radius + radius_step;
 	if (radius <= 10.0) {
-		camera.setRadius(radius);	
-	}
-	
-	writeValue('lblRadius', radius);
+		camera.setRadius(radius);
+
+		writeValue('lblRadius', radius);	
+	}	
 }
 
 function decreaseRadius() {
@@ -79,9 +81,49 @@ function decreaseRadius() {
 	radius = radius - radius_step;
 	if (radius >= 0.0) {
 		camera.setRadius(radius);	
-	}
-	
-	writeValue('lblRadius', radius);
+
+		writeValue('lblRadius', radius);
+	}	
+}
+
+function increaseTheta() {
+	let theta = camera.getTheta();
+	theta = theta + theta_step;
+	if (theta <= 360.0) {
+		camera.setTheta(theta);
+
+		writeValue('lblTheta', theta);
+	}	
+}
+
+function decreaseTheta() {
+	let theta = camera.getTheta();
+	theta = theta - theta_step;
+	if (theta >= 0.0) {
+		camera.setTheta(theta);
+
+		writeValue('lblTheta', theta);
+	}	
+}
+
+function increasePhi() {
+	let phi = camera.getPhi();
+	phi = phi + phi_step;
+	if (phi <= 179.0) {
+		camera.setPhi(phi);
+
+		writeValue('lblPhi', phi);
+	}	
+}
+
+function decreasePhi() {
+	let phi = camera.getPhi();
+	phi = phi - phi_step;
+	if (phi >= 1.0) {
+		camera.setPhi(phi);
+
+		writeValue('lblPhi', phi);
+	}	
 }
 
 /*
@@ -115,37 +157,18 @@ function onKeyDown(evt) {
 		case "NumpadSubtract":
 			decreaseRadius();
 			break;
-
-		/*case "KeyA":
-			camera.moveLeft();
-			break;
 		case "KeyD":
-			camera.moveRight();
+			increaseTheta();
 			break;
-		case "KeyQ":
-			camera.moveDown();
+		case "KeyA":
+			decreaseTheta();
 			break;
-		case "KeyE":
-			camera.moveUp();
+		case "KeyW":
+			increasePhi();
 			break;
-		case "KeyJ":
-			camera.yawLeft();
+		case "KeyS":
+			decreasePhi();
 			break;
-		case "KeyL":
-			camera.yawRight();
-			break;
-		case "KeyI":
-			camera.pitchUp();
-			break;
-		case "KeyK":
-			camera.pitchDown();
-			break;
-		case "KeyU":
-			camera.rollLeft();
-			break;
-		case "KeyO":
-			camera.rollRight();
-			break;*/
 	}
 	onRender();
 }

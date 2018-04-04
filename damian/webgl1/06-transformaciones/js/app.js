@@ -35,14 +35,14 @@ var axis;//Objeto auxiliar "Ejes"
 var camera;
 
 function loadObjects(pos_location) {
-	cubo = new Object(cuboSource, pos_location);
-	cubo.generateModel();
+	mono = new Object(monoSource, pos_location);
+	mono.generateModel();
 
 	esfera = new Object(esferaSource, pos_location);
 	esfera.generateModel();
 
-	cilindro = new Object(cilindroSource, pos_location);
-	cilindro.generateModel();
+	ironman = new Object(ironmanSource, pos_location);
+	ironman.generateModel();
 
 	cono = new Object(conoSource, pos_location);
 	cono.generateModel();
@@ -61,7 +61,7 @@ function setObjectTransformations() {
 	mat4.fromScaling(scaling, [0.25, 0.25, 0.25]);
 	mat4.fromTranslation(translation, [1.0, 0.0, 1.0]);
 	mat4.multiply(matrix, translation, scaling);
-	cubo.setModelMatrix(matrix);
+	mono.setModelMatrix(matrix);
 
 
 	// Set esfera model matrix
@@ -80,7 +80,7 @@ function setObjectTransformations() {
 	mat4.fromScaling(scaling, [0.25, 0.25, 0.25]);
 	mat4.fromTranslation(translation, [1.0, 0.0, -1.0]);
 	mat4.multiply(matrix, translation, scaling);
-	cilindro.setModelMatrix(matrix);
+	ironman.setModelMatrix(matrix);
 
 	// Set cono model matrix
 	matrix = mat4.create();
@@ -150,9 +150,9 @@ function onRender() {
 	gl.uniform3fv(u_modelColor, _modelColor);
 
 	// Draw objects
-	cubo.draw(isSolid, gl, _gl);
+	mono.draw(isSolid, gl, _gl);
 	esfera.draw(isSolid, gl, _gl);
-	cilindro.draw(isSolid, gl, _gl);
+	ironman.draw(isSolid, gl, _gl);
 	cono.draw(isSolid, gl, _gl);
 
 	_gl.bindVertexArrayOES(null);
