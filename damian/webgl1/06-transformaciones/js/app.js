@@ -54,7 +54,7 @@ function setObjectTransformations() {
 	let translation = mat4.create();
 	let scaling = mat4.create();
 
-	// Set cubo model matrix
+	// Set mono model matrix
 	matrix = mat4.create();
 	translation = mat4.create();
 	scaling = mat4.create();
@@ -73,7 +73,7 @@ function setObjectTransformations() {
 	mat4.multiply(matrix, translation, scaling);
 	esfera.setModelMatrix(matrix);
 
-	// Set cilindro model matrix
+	// Set ironman model matrix
 	matrix = mat4.create();
 	translation = mat4.create();
 	scaling = mat4.create();
@@ -88,6 +88,96 @@ function setObjectTransformations() {
 	scaling = mat4.create();
 	mat4.fromScaling(scaling, [0.25, 0.25, 0.25]);
 	mat4.fromTranslation(translation, [-1.0, 0.0, -1.0]);
+	mat4.multiply(matrix, translation, scaling);
+	cono.setModelMatrix(matrix);
+}
+
+function setObjectTransformations2() {
+	let matrix = mat4.create();
+	let translation = mat4.create();
+	let scaling = mat4.create();
+	let rotation = mat4.create();
+
+	// Set mono model matrix
+	matrix = mat4.create();
+	translation = mat4.create();
+	scaling = mat4.create();
+	mat4.fromScaling(scaling, [0.25, 0.25, 0.25]);
+	mat4.fromTranslation(translation, [0.5, 0.0, 0.5]);
+	mat4.multiply(matrix, translation, scaling);
+	mono.setModelMatrix(matrix);
+
+
+	// Set esfera model matrix
+	matrix = mat4.create();
+	translation = mat4.create();
+	scaling = mat4.create();
+	mat4.fromScaling(scaling, [0.25, 0.25, 0.25]);
+	mat4.fromTranslation(translation, [-0.5, 0.0, 0.5]);
+	mat4.multiply(matrix, translation, scaling);
+	esfera.setModelMatrix(matrix);
+
+	// Set ironman model matrix
+	matrix = mat4.create();
+	translation = mat4.create();
+	scaling = mat4.create();
+	rotation = mat4.create();
+	mat4.fromScaling(scaling, [0.25, 0.25, 0.25]);
+	mat4.fromTranslation(translation, [0.5, 0.0, -0.5]);
+	mat4.fromZRotation(rotation, glMatrix.toRadian(90));
+	mat4.multiply(matrix, rotation, scaling);
+	mat4.multiply(matrix, translation, matrix);
+	ironman.setModelMatrix(matrix);
+
+	// Set cono model matrix
+	matrix = mat4.create();
+	translation = mat4.create();
+	scaling = mat4.create();
+	mat4.fromScaling(scaling, [0.25, 0.25, 0.25]);
+	mat4.fromTranslation(translation, [-0.5, 0.0, -0.5]);
+	mat4.multiply(matrix, translation, scaling);
+	cono.setModelMatrix(matrix);
+}
+
+function setObjectTransformations3() {
+	let matrix = mat4.create();
+	let translation = mat4.create();
+	let scaling = mat4.create();
+
+	// Set mono model matrix
+	matrix = mat4.create();
+	translation = mat4.create();
+	scaling = mat4.create();
+	mat4.fromScaling(scaling, [0.25, 0.25, 0.25]);
+	mat4.fromTranslation(translation, [2.5, 0.0, 2.5]);
+	mat4.multiply(matrix, translation, scaling);
+	mono.setModelMatrix(matrix);
+
+
+	// Set esfera model matrix
+	matrix = mat4.create();
+	translation = mat4.create();
+	scaling = mat4.create();
+	mat4.fromScaling(scaling, [0.25, 0.25, 0.25]);
+	mat4.fromTranslation(translation, [-2.5, 0.0, 2.5]);
+	mat4.multiply(matrix, translation, scaling);
+	esfera.setModelMatrix(matrix);
+
+	// Set ironman model matrix
+	matrix = mat4.create();
+	translation = mat4.create();
+	scaling = mat4.create();
+	mat4.fromScaling(scaling, [0.75, 0.75, 0.75]);
+	mat4.fromTranslation(translation, [2.5, 0.0, -2.5]);
+	mat4.multiply(matrix, translation, scaling);
+	ironman.setModelMatrix(matrix);
+
+	// Set cono model matrix
+	matrix = mat4.create();
+	translation = mat4.create();
+	scaling = mat4.create();
+	mat4.fromScaling(scaling, [0.25, 0.25, 0.25]);
+	mat4.fromTranslation(translation, [-2.5, 0.0, -2.5]);
 	mat4.multiply(matrix, translation, scaling);
 	cono.setModelMatrix(matrix);
 }
@@ -150,6 +240,21 @@ function onRender() {
 	gl.uniform3fv(u_modelColor, _modelColor);
 
 	// Draw objects
+	setObjectTransformations();
+	mono.draw(isSolid, gl, _gl);
+	esfera.draw(isSolid, gl, _gl);
+	ironman.draw(isSolid, gl, _gl);
+	cono.draw(isSolid, gl, _gl);
+
+	// Draw objects using different transformations
+	setObjectTransformations2();
+	mono.draw(isSolid, gl, _gl);
+	esfera.draw(isSolid, gl, _gl);
+	ironman.draw(isSolid, gl, _gl);
+	cono.draw(isSolid, gl, _gl);
+
+	// Yet again draw objects using different transformations
+	setObjectTransformations3();
 	mono.draw(isSolid, gl, _gl);
 	esfera.draw(isSolid, gl, _gl);
 	ironman.draw(isSolid, gl, _gl);
