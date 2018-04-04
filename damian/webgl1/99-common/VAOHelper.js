@@ -14,6 +14,7 @@ class VAOHelper {
 			let errorMsg = "Buh! (webgl1) Unsupported use of VAOs. " +
 			"You may use VBOs and EBOs but it requires a lot of changes. " +
 			"OR You can move to webgl2";
+			throw errorMsg;
 		}
 		return vaoExtension;
 	}
