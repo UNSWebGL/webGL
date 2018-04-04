@@ -102,9 +102,12 @@ function setObjectTransformations2() {
 	matrix = mat4.create();
 	translation = mat4.create();
 	scaling = mat4.create();
+	rotation = mat4.create();
 	mat4.fromScaling(scaling, [0.25, 0.25, 0.25]);
 	mat4.fromTranslation(translation, [0.5, 0.0, 0.5]);
-	mat4.multiply(matrix, translation, scaling);
+	mat4.fromYRotation(rotation, glMatrix.toRadian(45));
+	mat4.multiply(matrix, rotation, scaling);
+	mat4.multiply(matrix, translation, matrix);
 	mono.setModelMatrix(matrix);
 
 
@@ -133,9 +136,12 @@ function setObjectTransformations2() {
 	matrix = mat4.create();
 	translation = mat4.create();
 	scaling = mat4.create();
+	rotation = mat4.create();
 	mat4.fromScaling(scaling, [0.25, 0.25, 0.25]);
 	mat4.fromTranslation(translation, [-0.5, 0.0, -0.5]);
-	mat4.multiply(matrix, translation, scaling);
+	mat4.fromZRotation(rotation, glMatrix.toRadian(180));
+	mat4.multiply(matrix, rotation, scaling);
+	mat4.multiply(matrix, translation, matrix);
 	cono.setModelMatrix(matrix);
 }
 
@@ -143,14 +149,18 @@ function setObjectTransformations3() {
 	let matrix = mat4.create();
 	let translation = mat4.create();
 	let scaling = mat4.create();
+	let rotation = mat4.create();
 
 	// Set mono model matrix
 	matrix = mat4.create();
 	translation = mat4.create();
 	scaling = mat4.create();
-	mat4.fromScaling(scaling, [0.25, 0.25, 0.25]);
+	rotation = mat4.create();
+	mat4.fromScaling(scaling, [0.5, 0.25, 0.75]);
 	mat4.fromTranslation(translation, [2.5, 0.0, 2.5]);
-	mat4.multiply(matrix, translation, scaling);
+	mat4.fromXRotation(rotation, glMatrix.toRadian(90));
+	mat4.multiply(matrix, rotation, scaling);
+	mat4.multiply(matrix, translation, matrix);
 	mono.setModelMatrix(matrix);
 
 
@@ -167,18 +177,25 @@ function setObjectTransformations3() {
 	matrix = mat4.create();
 	translation = mat4.create();
 	scaling = mat4.create();
+	rotation = mat4.create();
 	mat4.fromScaling(scaling, [0.75, 0.75, 0.75]);
 	mat4.fromTranslation(translation, [2.5, 0.0, -2.5]);
 	mat4.multiply(matrix, translation, scaling);
+	mat4.fromYRotation(rotation, glMatrix.toRadian(180));
+	mat4.multiply(matrix, rotation, scaling);
+	mat4.multiply(matrix, translation, matrix);
 	ironman.setModelMatrix(matrix);
 
 	// Set cono model matrix
 	matrix = mat4.create();
 	translation = mat4.create();
 	scaling = mat4.create();
-	mat4.fromScaling(scaling, [0.25, 0.25, 0.25]);
+	rotation = mat4.create();
+	mat4.fromScaling(scaling, [0.25, 0.75, 0.25]);
 	mat4.fromTranslation(translation, [-2.5, 0.0, -2.5]);
-	mat4.multiply(matrix, translation, scaling);
+	mat4.fromZRotation(rotation, glMatrix.toRadian(45));
+	mat4.multiply(matrix, rotation, scaling);
+	mat4.multiply(matrix, translation, matrix);
 	cono.setModelMatrix(matrix);
 }
 
