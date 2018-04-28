@@ -81,7 +81,7 @@ function onRender() {
 	gl.uniformMatrix4fv(u_projMatrix, false, projMatrix);
 
 	_gl.bindVertexArrayOES(vao);
-	gl.drawElements(gl.LINES, indexCount, gl.UNSIGNED_SHORT, 0);
+	gl.drawElements(gl.LINES, indexCount, gl.UNSIGNED_INT, 0);
 
 	_gl.bindVertexArrayOES(null);
 	gl.useProgram(null);
