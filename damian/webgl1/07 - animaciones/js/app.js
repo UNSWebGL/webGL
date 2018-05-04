@@ -17,9 +17,11 @@ var modelColor = Utils.hexToRgbFloat("#FFFFFF");
 //Models (OBJ)
 var cono;
 var then=0;
-
+var velocidadRotacion = 15;
 // Auxiliary objects
 var axis;
+var world;
+var sphereBody;
 
 // Camera
 var camera;
@@ -29,11 +31,11 @@ var isSolid = false;
 
 function loadModels(pos_location) {
 	// Load each model (OBJ) and generate the mesh
-	mono = new Model(monoSource);
-	mono.generateModel(pos_location);
+	// mono = new Model(monoSource);
+	// mono.generateModel(pos_location);
 
-	// esfera = new Model(esferaSource);
-	// esfera.generateModel(pos_location);
+	esfera = new Model(esferaSource);
+	esfera.generateModel(pos_location);
 	//
 	// ironman = new Model(ironmanSource);
 	// ironman.generateModel(pos_location);
@@ -49,13 +51,13 @@ function setModelsTransformations() {
 	let scaling = mat4.create();
 
 	// Set mono model matrix
-	matrix = mat4.create();
-	translation = mat4.create();
-	scaling = mat4.create();
-	mat4.fromScaling(scaling, [0.25, 0.25, 0.25]);
-	mat4.fromTranslation(translation, [1.0, 0.0, 1.0]);
-	mat4.multiply(matrix, translation, scaling);
-	mono.setModelMatrix(matrix);
+	// matrix = mat4.create();
+	// translation = mat4.create();
+	// scaling = mat4.create();
+	// mat4.fromScaling(scaling, [0.25, 0.25, 0.25]);
+	// mat4.fromTranslation(translation, [1.0, 0.0, 1.0]);
+	// mat4.multiply(matrix, translation, scaling);
+	// mono.setModelMatrix(matrix);
 
 	// Set esfera model matrix
 	// matrix = mat4.create();
@@ -117,18 +119,46 @@ function onLoad() {
 
 	// Create the camera using canvas dimension
 	camera = new SphericalCamera(55, 800/600);
+	camera.setRadius(10);
+	// start physics
+	world = new CANNON.World();
+	world.gravity.set(0, 0, -9.82); // m/s²
+
+	// Create a sphere
+	var radius = 1; // m
+	sphereBody = new CANNON.Body({
+	   mass:1, // kg
+	   position: new CANNON.Vec3(0, 0, 10), // m
+	   shape: new CANNON.Sphere(radius/4)
+	});
+	world.addBody(sphereBody);
+
+	// Create a plane
+	var groundBody = new CANNON.Body({
+	    mass: 0 // mass == 0 makes the body static
+	});
+	var groundShape = new CANNON.Plane();
+	groundBody.addShape(groundShape);
+	world.addBody(groundBody);
+
+	
+
+	// end physics
+
 	requestAnimationFrame(onRender);
 }
 
 function onRender(now) {
 	// Convert to seconds
-  now *= 0.001;
-  // Subtract the previous time from the current time
-  var deltaTime = now - then;
+	now *= 0.001;
+	// Subtract the previous time from the current time
+	var deltaTime = now - then;
+	world.step(deltaTime);
+	console.log("Sphere z position: " + sphereBody.position.z);
 
-  // Remember the current time for the next frame.
-  then = now;
-	camera.setTheta(camera.getTheta() + deltaTime*50);
+	// Remember the current time for the next frame.
+	then = now;
+	camera.setTheta(camera.getTheta() + deltaTime*velocidadRotacion);
 	let modelMatrix = mat4.create();
 	let viewMatrix = camera.getViewMatrix();
 	let projMatrix = camera.getProjMatrix();
@@ -147,9 +177,10 @@ function onRender(now) {
 	gl.uniform3fv(u_modelColor, _modelColor);
 
 	// Draw models
-	setModelsTransformations();
-	mono.draw(isSolid, gl, _gl);
-	// esfera.draw(isSolid, gl, _gl);
+	// setModelsTransformations();
+	// mono.draw(isSolid, gl, _gl);
+	moverEsfera(sphereBody.position.x,sphereBody.position.z,sphereBody.position.y);
+	esfera.draw(isSolid, gl, _gl);
 	// ironman.draw(isSolid, gl, _gl);
 	// cono.draw(isSolid, gl, _gl);
 
@@ -158,5 +189,15 @@ function onRender(now) {
 	gl.useProgram(null);
 
 	// Call drawScene again next frame
-    requestAnimationFrame(onRender);
+	requestAnimationFrame(onRender);
+}
+
+function moverEsfera (x,y,z){
+	matrix = mat4.create();
+	translation = mat4.create();
+	scaling = mat4.create();
+	mat4.fromScaling(scaling, [0.25, 0.25, 0.25]);
+	mat4.fromTranslation(translation, [x, y, z]);
+	mat4.multiply(matrix,translation, scaling);
+	esfera.setModelMatrix(matrix);
 }
