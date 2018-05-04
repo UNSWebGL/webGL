@@ -22,7 +22,7 @@ var velocidadRotacion = 15;
 var axis;
 var world;
 var sphereBody;
-
+var sphereBody2;
 // Camera
 var camera;
 
@@ -123,19 +123,41 @@ function onLoad() {
 	// start physics
 	world = new CANNON.World();
 	world.gravity.set(0, 0, -9.82); // m/s²
-
+	
+	// Create material
+	var groundMaterial=new CANNON.Material();
+	var mat1 = new CANNON.Material();
+	var mat2= new CANNON.Material();
+	//var mat3_ground = new CANNON.ContactMaterial(groundMaterial, mat3, { friction: 0.0, restitution: 0.9 });
+	//world.addContactMaterial(mat3_ground);
+	 var mat1_ground = new CANNON.ContactMaterial(groundMaterial, mat1, { friction: 0.0, restitution: 0.0 });
+     var mat2_ground = new CANNON.ContactMaterial(groundMaterial, mat2, { friction: 0.0, restitution: 0.4});
 	// Create a sphere
 	var radius = 1; // m
 	sphereBody = new CANNON.Body({
 	   mass:1, // kg
-	   position: new CANNON.Vec3(0, 0, 10), // m
+		material : mat1,
+	   position: new CANNON.Vec3(1, 0,30), // m
 	   shape: new CANNON.Sphere(radius/4)
 	});
 	world.addBody(sphereBody);
+	//otra esfera
+	var radius = 1; // m
+	sphereBody2 = new CANNON.Body({
+	   mass:0.5,// kg
+		angularDamping:0.5,
+		material:mat2,
+	   position: new CANNON.Vec3(-1,0,30), // m
+	   shape: new CANNON.Sphere(radius/4)
+	});
+	world.addBody(sphereBody2);
+	world.addContactMaterial(mat1_ground);
+     world.addContactMaterial(mat2_ground);
 
 	// Create a plane
 	var groundBody = new CANNON.Body({
-	    mass: 0 // mass == 0 makes the body static
+	    mass: 0,
+		material: groundMaterial,// mass == 0 makes the body static
 	});
 	var groundShape = new CANNON.Plane();
 	groundBody.addShape(groundShape);
@@ -179,7 +201,9 @@ function onRender(now) {
 	// Draw models
 	// setModelsTransformations();
 	// mono.draw(isSolid, gl, _gl);
-	moverEsfera(sphereBody.position.x,sphereBody.position.z,sphereBody.position.y);
+	mover(sphereBody.position.x,sphereBody.position.z,sphereBody.position.y,esfera);
+	esfera.draw(isSolid, gl, _gl);
+	mover(sphereBody2.position.x,sphereBody2.position.z,sphereBody2.position.y,esfera);
 	esfera.draw(isSolid, gl, _gl);
 	// ironman.draw(isSolid, gl, _gl);
 	// cono.draw(isSolid, gl, _gl);
@@ -192,12 +216,12 @@ function onRender(now) {
 	requestAnimationFrame(onRender);
 }
 
-function moverEsfera (x,y,z){
+function mover (x,y,z,obj){
 	matrix = mat4.create();
 	translation = mat4.create();
 	scaling = mat4.create();
 	mat4.fromScaling(scaling, [0.25, 0.25, 0.25]);
 	mat4.fromTranslation(translation, [x, y, z]);
 	mat4.multiply(matrix,translation, scaling);
-	esfera.setModelMatrix(matrix);
+	obj.setModelMatrix(matrix);
 }
