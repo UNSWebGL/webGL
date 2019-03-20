@@ -129,7 +129,7 @@ function onRender() {
 // Physics
 // -----------------------
 var world;
-var sphereBody1, spehereBody2;
+var sphereBody1, sphereBody2;
 var worldTimeStep = 1.0 / 60.0; // 60hz
 var modelPosition = vec3.create();//holds a position
 var modelOrientation = quat.create();
